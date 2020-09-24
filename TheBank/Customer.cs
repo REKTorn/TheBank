@@ -10,6 +10,6 @@ namespace TheBank
     {
         public string Name { get; set; }
         public float Balance { get; set; }
-        public string ShowCustomer { get; { return "Hello Mr. " + Name + ". Your balance is " + Balance + "$."} }
+        public string ShowCustomer { get { return Name; } }
     }
 }
