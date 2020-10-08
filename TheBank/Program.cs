@@ -74,7 +74,7 @@ namespace TheBank
             int i = int.Parse(Console.ReadLine()); // The program asks for the user to chose a customer with the help of integers
             Console.WriteLine();
             Console.WriteLine("Hur mycket vill du ta ut?");
-            float transfer = int.Parse(Console.ReadLine()); // The program asks the user how much will be withdrawn from the customer
+            float transfer = float.Parse(Console.ReadLine()); // The program asks the user how much will be withdrawn from the customer
 
             if (customers[i].Balance() == 0) // If the customer do not have any money, it wont let you withdraw anything, followed by an error message.
             {
@@ -84,7 +84,7 @@ namespace TheBank
             {
                 Console.WriteLine("Du kan inte ta ut på kredit.");
             }
-            else // Else it will subtract the amount withdrawn with the current balance.
+            else // Else it will add the value of the withdrawal to the transaction list through the withdraw method.
             {
                 customers[i].Withdraw(transfer);
             }
@@ -99,8 +99,8 @@ namespace TheBank
             int i = int.Parse(Console.ReadLine()); // Program asks to chose an integer which is assigned to a customer.
             Console.WriteLine();
             Console.WriteLine("Hur mycket vill du sätta in?"); // Asks how much the user wants to deposit.
-            int transfer = int.Parse(Console.ReadLine()); // Adds the value into a variable.
-            customers[i].Deposit(transfer); // The chosen customers balance is added with the deposit value.
+            float transfer = float.Parse(Console.ReadLine()); // Adds the value into a variable.
+            customers[i].Deposit(transfer); // The deposit value is added to the transactions list through the deposit method.
             Console.WriteLine();
         }
 
@@ -112,7 +112,8 @@ namespace TheBank
             Console.WriteLine();
 
             int i = int.Parse(Console.ReadLine()); // Program asks to chose an integer which is assigned to a customer.
-            Console.WriteLine(customers[i].Name + " har" + customers[i].Balance() + "$." + Environment.NewLine + "Transaktioner: " + customers[i].ShowTransactions()); // Prints a message that shows the customers balance.
+            // The upcoming WriteLine will print a balance message for the customer chosen along with the transactions made with a time stamp through the different methods.
+            Console.WriteLine(customers[i].Name + " har" + customers[i].Balance() + "$." + Environment.NewLine + "Transaktioner: " + customers[i].ShowTransactions());
             Console.WriteLine();
         }
 
@@ -124,16 +125,15 @@ namespace TheBank
             Console.WriteLine();
 
             int i = int.Parse(Console.ReadLine()); // Program asks to chose an integer which is assigned to a customer.
-            customers.RemoveAt(i); // Removes a customer from the customers list.
+            customers.RemoveAt(i); // Removes the chosen customer from the customers list.
             Console.WriteLine();
         }
 
         private static void AddCustomer()
         {
-            Customer customer = new Customer(); // 
+            Customer customer = new Customer(); // Creates a variable for the different properties that will be applied to the customer later.
             Console.Write("Ange namn för användaren: ");
-            customer.Name = Console.ReadLine(); // Program asks the user for the name of the customer that will be added
-            customer.Balance = 0; // Pre-applies a balance of 0 to the customer
+            customer.Name = Console.ReadLine(); // Program asks the user for the name of the customer that will be added.
             Console.WriteLine("Du la till en användare.");
             customers.Add(customer); // Adds the new customer to the customers list.
             Console.WriteLine();
