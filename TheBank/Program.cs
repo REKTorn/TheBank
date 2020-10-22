@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TheBank
 {
@@ -11,8 +10,30 @@ namespace TheBank
     {
 
         static List<Customer> customers = new List<Customer>();
+        static string filepath = @"C:\customers\";
+        static string filename = @"customers.txt";
         static void Main(string[] args)
         {
+
+            string text = ReadFile(filepath, filename); // Loads the customer file into the variable "text"
+
+            if (text != "") // Checks if the file is empty and if so...
+            {
+                string[] items = text.Split(';'); // Splits the text in the file at every semi-colon.
+                Array.Resize(ref items, items.Length - 1); // Deletes the last index since it becomes empty after the last semi-colon an the program does not like that.
+
+                foreach (string item in items) // Runs as many times as the list has indexes.
+                {
+                    // Creates new customers into the program from the located file with thier names and balance seperated with the chosen character, in this case "|" and ";".
+                    Customer c = new Customer();
+                    string[] details = item.Split('|');
+                    c.Name = details[0];
+                    c.Deposit(int.Parse(details[1]));
+                    customers.Add(c);
+                }
+            }
+
+
             // Starts the program with this welcoming message.
             Console.WriteLine("Välkommen till banken!");
             Console.WriteLine();
@@ -63,8 +84,51 @@ namespace TheBank
                 }
             }
 
-
+            WriteCustomersToFile();
             Console.ReadLine();
+        }
+
+
+        private static string ReadFile(string filepath, string filename)
+        {
+
+            string f = filepath + filename;
+            if (Directory.Exists(filepath) == false) // Creates a directory if there are none.
+            {
+                Directory.CreateDirectory(filepath);
+            }
+            if (File.Exists(f) == false) // Creates a file if it does not exist one.
+            {
+                File.WriteAllText(f, "");
+            }
+            string text = File.ReadAllText(f); // Reads everything the file contains.
+            return text; // Returns the content of the file to where the function was called on.
+
+        }
+
+        private static void WriteCustomersToFile()
+        {
+            string users = "";
+            foreach (Customer c in customers) // Adds characters between the name and balance of the customer
+            {
+                users += c.Name + "|" + c.Balance() + ";";
+            }
+            WriteFile(filepath, filename, users); // Prints the customers name and balance into a file with the variable at chosen location.
+        }
+
+        static void WriteFile(string filepath, string filename, string text)
+        {
+            string f = filepath + filename;
+            if (File.Exists(f)) // Deletes the file if it exists
+            {
+                File.Delete(f);
+            }
+            if (Directory.Exists(filepath) == false) // If the filepath directory does not exist, it creates one.
+            {
+                Directory.CreateDirectory(filepath);
+            }
+            File.WriteAllText(f, text); // Prints out all customers with name and balance into the file.
+
         }
 
         private static void Withdraw()
@@ -113,7 +177,7 @@ namespace TheBank
 
             int i = int.Parse(Console.ReadLine()); // Program asks to chose an integer which is assigned to a customer.
             // The upcoming WriteLine will print a balance message for the customer chosen along with the transactions made with a time stamp through the different methods.
-            Console.WriteLine(customers[i].Name + " har" + customers[i].Balance() + "$." + Environment.NewLine + "Transaktioner: " + customers[i].ShowTransactions());
+            Console.WriteLine(customers[i].Name + " har " + customers[i].Balance() + "$." + Environment.NewLine + "Transaktioner: " + customers[i].ShowTransactions());
             Console.WriteLine();
         }
 
@@ -141,10 +205,18 @@ namespace TheBank
 
         private static void ShowAllCustomers()
         {
-            for (int i = 0; i < customers.Count; i++) // Looping through the customers list printing all the excisting customers.
+            if (customers.Count == 0)
             {
-                Console.WriteLine(i + ": "  + customers[i].ShowCustomer);
+                Console.WriteLine("Det finns inga användare att visa.");
             }
+            else
+            {
+                for (int i = 0; i < customers.Count; i++) // Looping through the customers list printing all the excisting customers.
+                {
+                    Console.WriteLine(i + ": " + customers[i].ShowCustomer);
+                }
+            }
+
 
             /*foreach (Customer Name in customers)
             {
